@@ -2,7 +2,7 @@
   "name": "bankroll",
   "version": "0.0.1",
   "description": "An angular module providing directives for number, money and currency parsing/formatting and conversion.",
-  "main": "index.js",
+  "main": "dist/bankroll.js",
   "scripts": {
     "test": "./node_modules/.bin/jasmine-node ."
   },
