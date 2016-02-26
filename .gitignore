@@ -34,3 +34,4 @@ node_modules
 
 # Generated API Docs
 site
+mkdocs.yml
