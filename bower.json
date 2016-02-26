@@ -1,0 +1,32 @@
+{
+  "name": "bankroll",
+  "description": "An angular module providing directives for number, money and currency parsing/formatting and conversion.",
+  "main": "index.js",
+  "authors": [
+    "Bernard Ojengwa"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "money",
+    "conversion",
+    "accounting",
+    "account",
+    "payment",
+    "parsing",
+    "angular",
+    "finance"
+  ],
+  "homepage": "https://github.com/ojengwa/bankroll",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/lib",
+    "test",
+    "tests"
+  ]
+}
