@@ -1,0 +1,42 @@
+{
+  "name": "bankroll",
+  "version": "0.0.1",
+  "description": "An angular module providing directives for number, money and currency parsing/formatting and conversion.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine-node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ojengwa/bankroll.git"
+  },
+  "keywords": [
+    "money",
+    "conversion",
+    "accounting",
+    "account",
+    "payment",
+    "parsing",
+    "angular",
+    "finance"
+  ],
+  "author": "Bernard Ojengwa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ojengwa/bankroll/issues"
+  },
+  "homepage": "https://github.com/ojengwa/bankroll#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-ng-annotate": "^2.0.0",
+    "gulp-rev": "^7.0.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
+    "jasmine-node": "^1.14.5"
+  },
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "banknote": "^0.2.0"
+  }
+}
