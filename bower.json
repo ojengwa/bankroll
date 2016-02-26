@@ -1,7 +1,7 @@
 {
   "name": "bankroll",
   "description": "An angular module providing directives for number, money and currency parsing/formatting and conversion.",
-  "main": "index.js",
+  "main": "dist/bankroll.js",
   "authors": [
     "Bernard Ojengwa"
   ],
