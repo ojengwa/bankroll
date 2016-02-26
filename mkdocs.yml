@@ -1,0 +1,10 @@
+site_name: Bankroll Documentation.
+theme: mkdocs
+repo_url: https://github.com/ojengwa/bankroll/
+repo_name: Github Repo
+site_description: An angular module providing directives for number, money and currency parsing/formatting and conversion.
+site_author: Bernard Ojengwa
+copyright: ©2016, Bernard Ojengwa
+
+extra:
+    version: 0.0.1
