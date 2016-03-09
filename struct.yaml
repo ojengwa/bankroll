@@ -1,0 +1,39 @@
+main deps:
+    banknote:
+        filters:
+            formatSubUnitAmount
+                params
+                    amount - number
+                    formatting - string
+    accounting:
+        directives:
+            formatNuber
+                params
+                    number - number
+                    precision - number
+                    thousand - number
+                    decimal - number
+            unformat
+                params
+                    value - number
+                    decimal - number
+            toFixed
+                params
+                    value - number
+                    precision - number
+            formatMoney
+                params
+                    number - number
+                    symbol - number
+                    precision - number
+                    thousand - number
+                    decimal - number
+                    format - number
+            formatColumns
+                params
+                    list - Array
+                    symbol - string
+                    precision - number
+                    thousand - number
+                    decimal - number
+                    format - number
