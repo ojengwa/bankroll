@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+var countryCurrencyMap = {
     'AC': 'USD',
     'AD': 'EUR',
     'AE': 'AED',
