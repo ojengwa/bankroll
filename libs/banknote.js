@@ -19,131 +19,135 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+(function  (root) {
 
-'use strict';
+    'use strict';
 
-var countryCurrencyMap = require('../data/country-currency');
-var currencySymbolMap = require('../data/symbol-map');
-var localeSeparatorsMap = require('../data/separators');
-var localePositionersMap = require('../data/positions');
+    var lib = {} // local object for export
 
-var THOUSAND_MATCHER = /\B(?=(\d{3})+(?!\d))/g;
-var LOCALE_MATCHER = /^\s*([a-zA-Z]{2,4})(?:[-_][a-zA-Z]{4})?(?:[-_]([a-zA-Z]{2}|\d{3}))?\s*(?:$|[-_])/;
-var LOCALE_LANGUAGE = 1;
-var LOCALE_REGION = 2;
+    var localeSeparatorsMap = separators;
+    var localePositionersMap = positions;
 
-function error(message) {
-    throw new Error(message);
-}
+    var THOUSAND_MATCHER = /\B(?=(\d{3})+(?!\d))/g;
+    var LOCALE_MATCHER = /^\s*([a-zA-Z]{2,4})(?:[-_][a-zA-Z]{4})?(?:[-_]([a-zA-Z]{2}|\d{3}))?\s*(?:$|[-_])/;
+    var LOCALE_LANGUAGE = 1;
+    var LOCALE_REGION = 2;
 
-/**
- * @param {Object} map
- * @param {string} locale
- * @param {Array<string>} localeParts
- * @throws {Error}
- * @returns {string}
- */
-function findWithFallback(map, locale, localeParts) {
-    var result = map[locale] ||
-                 map[localeParts[LOCALE_LANGUAGE] + '-' + localeParts[LOCALE_REGION]] ||
-                 map[localeParts[LOCALE_LANGUAGE]];
-    if (!result) {
-        error('Could not find info for locale "' + locale + '"');
+    function error(message) {
+        throw new Error(message);
     }
 
-    return result;
-}
-
-/**
- * @param {string} region
- * @returns {string}
- */
-function getCurrencyFromRegion(region) {
-    var currencyCode = countryCurrencyMap[region];
-    if (!currencyCode) {
-        error('Could not find default currency for locale region "' + region + '". Please provide explicit currency.');
-    }
-    return currencyCode;
-}
-
-/**
- * @typedef {{
- *     showDecimalIfWhole: boolean,
- *     subunitsPerUnit: number,
- *     effectiveLocale: string,
- *     currencyCode: string,
- *     currencySymbol: string,
- *     currencyFormatter: function,
- *     thousandSeparator: string,
- *     decimalSeparator: string
- * }} BanknoteFormatting
- */
-
-/**
- * This function tries hard to figure out full set formatting options necessary to format money.
- * If the locale is valid and contains are territory that is also a valid ISO3166-1-Alpha-2 country
- * code (e.g. en-US), then the default currency for that country is taken. Otherwise you have to
- * provide an explicit currency code.
- * @throws Error thrown if the lookup of formatting rules has failed.
- * @param {string} locale a BCP47 locale string
- * @param {string=} currencyCode explicit currency code for for the currency symbol lookup
- * @returns {BanknoteFormatting}
- */
-exports.formattingForLocale = function (locale, currencyCode) {
-    var localeParts = locale.match(LOCALE_MATCHER);
-
-    if (!localeParts) {
-        error('Locale provided does not conform to BCP47.');
-    }
-
-    currencyCode = currencyCode || getCurrencyFromRegion(localeParts[LOCALE_REGION]);
-    var separators = findWithFallback(localeSeparatorsMap, locale, localeParts);
-
-    return {
-        showDecimalIfWhole: true,
-        subunitsPerUnit: 100, // TODO change 100 with real information
-        currencyCode: currencyCode,
-        currencySymbol: currencySymbolMap[currencyCode] || currencyCode,
-        currencyFormatter: findWithFallback(localePositionersMap, locale, localeParts),
-        decimalSeparator: separators.charAt(0),
-        thousandSeparator: separators.charAt(1)
-    };
-};
-
-/**
- * Returns a currency code for the given country or `undefined` if nothing found.
- * @param {string} twoCharacterCountryCode
- * @returns {string|undefined}
- */
-exports.currencyForCountry = function (twoCharacterCountryCode) {
-    return countryCurrencyMap[twoCharacterCountryCode];
-};
-
-/**
- * This function accepts an amount in subunits (which are called "cents" in currencies like EUR or USD),
- * and also a formatting options object, that can be either constructed manually or created from locale
- * using `banknote.formattingForLocale()` method. This function doesn't provide any defaults for formatting.
- * @param {Number} subunitAmount
- * @param {BanknoteFormatting} formatting
- * @returns {string}
- */
-exports.formatSubunitAmount = function (subunitAmount, formatting) {
-    var minus = subunitAmount < 0 ? '-' : '';
-    var mainPart = Math.abs(subunitAmount / formatting.subunitsPerUnit) | 0; // | 0 cuts of the decimal part
-    var decimalPart = String(Math.abs(subunitAmount % formatting.subunitsPerUnit) | 0);
-    var formattedAmount = String(mainPart);
-
-    if (formatting.thousandSeparator) {
-        formattedAmount = formattedAmount.replace(THOUSAND_MATCHER, formatting.thousandSeparator);
-    }
-
-    if (!(!formatting.showDecimalIfWhole && decimalPart === '0')) {
-        var centsZeroFill = String(formatting.subunitsPerUnit).length - 1;
-        while (decimalPart.length < centsZeroFill) {
-            decimalPart = '0' + decimalPart;
+    /**
+     * @param {Object} map
+     * @param {string} locale
+     * @param {Array<string>} localeParts
+     * @throws {Error}
+     * @returns {string}
+     */
+    function findWithFallback(map, locale, localeParts) {
+        var result = map[locale] ||
+                     map[localeParts[LOCALE_LANGUAGE] + '-' + localeParts[LOCALE_REGION]] ||
+                     map[localeParts[LOCALE_LANGUAGE]];
+        if (!result) {
+            error('Could not find info for locale "' + locale + '"');
         }
-        formattedAmount += formatting.decimalSeparator + decimalPart;
+
+        return result;
     }
 
-    return formatting.currencyFormatter(formatting.currencySymbol, formattedAmount, minus);
-};
+    /**
+     * @param {string} region
+     * @returns {string}
+     */
+    function getCurrencyFromRegion(region) {
+        var currencyCode = countryCurrencyMap[region];
+        if (!currencyCode) {
+            error('Could not find default currency for locale region "' + region + '". Please provide explicit currency.');
+        }
+        return currencyCode;
+    }
+
+    /**
+     * @typedef {{
+     *     showDecimalIfWhole: boolean,
+     *     subunitsPerUnit: number,
+     *     effectiveLocale: string,
+     *     currencyCode: string,
+     *     currencySymbol: string,
+     *     currencyFormatter: function,
+     *     thousandSeparator: string,
+     *     decimalSeparator: string
+     * }} BanknoteFormatting
+     */
+
+    /**
+     * This function tries hard to figure out full set formatting options necessary to format money.
+     * If the locale is valid and contains are territory that is also a valid ISO3166-1-Alpha-2 country
+     * code (e.g. en-US), then the default currency for that country is taken. Otherwise you have to
+     * provide an explicit currency code.
+     * @throws Error thrown if the lookup of formatting rules has failed.
+     * @param {string} locale a BCP47 locale string
+     * @param {string=} currencyCode explicit currency code for for the currency symbol lookup
+     * @returns {BanknoteFormatting}
+     */
+    lib.formattingForLocale = function (locale, currencyCode) {
+        var localeParts = locale.match(LOCALE_MATCHER);
+        print(localeParts);
+        if (!localeParts) {
+            error('Locale provided does not conform to BCP47.');
+        }
+
+        currencyCode = currencyCode || getCurrencyFromRegion(localeParts[LOCALE_REGION]);
+        print(currencyCode);
+        var separators = findWithFallback(localeSeparatorsMap, locale, localeParts);
+
+        return {
+            showDecimalIfWhole: true,
+            subunitsPerUnit: 100, // TODO change 100 with real information
+            currencyCode: currencyCode,
+            currencySymbol: currencySymbolMap[currencyCode] || currencyCode,
+            currencyFormatter: findWithFallback(localePositionersMap, locale, localeParts),
+            decimalSeparator: separators.charAt(0),
+            thousandSeparator: separators.charAt(1)
+        };
+    };
+
+    /**
+     * Returns a currency code for the given country or `undefined` if nothing found.
+     * @param {string} twoCharacterCountryCode
+     * @returns {string|undefined}
+     */
+    lib.currencyForCountry = function (twoCharacterCountryCode) {
+        return countryCurrencyMap[twoCharacterCountryCode];
+    };
+
+    /**
+     * This function accepts an amount in subunits (which are called "cents" in currencies like EUR or USD),
+     * and also a formatting options object, that can be either constructed manually or created from locale
+     * using `banknote.formattingForLocale()` method. This function doesn't provide any defaults for formatting.
+     * @param {Number} subunitAmount
+     * @param {BanknoteFormatting} formatting
+     * @returns {string}
+     */
+    lib.formatSubunitAmount = function (subunitAmount, formatting) {
+        var minus = subunitAmount < 0 ? '-' : '';
+        var mainPart = Math.abs(subunitAmount / formatting.subunitsPerUnit) | 0; // | 0 cuts of the decimal part
+        var decimalPart = String(Math.abs(subunitAmount % formatting.subunitsPerUnit) | 0);
+        var formattedAmount = String(mainPart);
+
+        if (formatting.thousandSeparator) {
+            formattedAmount = formattedAmount.replace(THOUSAND_MATCHER, formatting.thousandSeparator);
+        }
+
+        if (!(!formatting.showDecimalIfWhole && decimalPart === '0')) {
+            var centsZeroFill = String(formatting.subunitsPerUnit).length - 1;
+            while (decimalPart.length < centsZeroFill) {
+                decimalPart = '0' + decimalPart;
+            }
+            formattedAmount += formatting.decimalSeparator + decimalPart;
+        }
+
+        return formatting.currencyFormatter(formatting.currencySymbol, formattedAmount, minus);
+    };
+    root['banknote'] = lib;
+})(this);
