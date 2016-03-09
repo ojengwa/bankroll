@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+var currencySymbolMap = {
     'AOA': 'Kz',
     'ARS': '$',
     'AUD': '$',
