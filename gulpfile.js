@@ -8,7 +8,7 @@ var sourcemaps = require('gulp-sourcemaps');
 // Concatenation task
 gulp.task('concat', function () {
     'use strict';
-    gulp.src(['src/bankroll.js', 'libs/*.js'])
+    gulp.src(['src/bankroll.js', 'libs/*.js', 'data/*.js',])
         .pipe(concat('bankroll.js'))
         .pipe(gulp.dest('dist'));
 });
@@ -27,5 +27,5 @@ gulp.task('compress', function () {
 
 gulp.task('watch', function () {
     'use strict';
-    gulp.watch('./', ['concat', 'compress']);
+    gulp.watch('./', ['concat']);
 });
